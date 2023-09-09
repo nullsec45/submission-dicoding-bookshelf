@@ -1,11 +1,9 @@
-import { STORAGE_KEY_UNCOMPLETED, STORAGE_KEY_COMPLETED, DATA_BOOKS, DATA_BOOKS_COMPLETED } from "./constant.js";
+import { STORAGE_KEY, DATA_BOOKS, } from "./constant.js";
 
 
 export default class ManageLocalStorage {
-    static DATA_BOOKS_STORAGE_UNCOMPLETED = localStorage.getItem(STORAGE_KEY_UNCOMPLETED) ? JSON.parse(localStorage.getItem(STORAGE_KEY_UNCOMPLETED)) : [];
-    static DATA_BOOKS_STORAGE_COMPLETED = localStorage.getItem(STORAGE_KEY_COMPLETED) ? JSON.parse(localStorage.getItem(STORAGE_KEY_COMPLETED)) : [];
 
-    static get _isStorageExists() {
+    static get isStorageExists() {
         if (typeof (Storage) === undefined) {
             alert("Browser kamu tidak mendukung local storage");
             return false;
@@ -13,41 +11,30 @@ export default class ManageLocalStorage {
         return true;
     }
 
-    static get getDataBooksUncompleted() {
-        return this.DATA_BOOKS_STORAGE_UNCOMPLETED;
+    static get index() {
+        const parsed = localStorage.getItem(STORAGE_KEY) ? JSON.parse(localStorage.getItem(STORAGE_KEY)) : [];
+        // console.log(parsed)
+        for (let data of parsed) {
+            DATA_BOOKS.push(data);
+        }
+        console.log(DATA_BOOKS)
+        return DATA_BOOKS;
     }
 
-    static get getDataBooksCompleted() {
-        return this.DATA_BOOKS_STORAGE_COMPLETED
-    }
 
-    static get setLocalStorage() {
-        if (this._isStorageExists) {
-            if (this.getDataBooksUncompleted.length == 0 && this.getDataBooksCompleted.length == 0) {
-                localStorage.setItem(STORAGE_KEY_UNCOMPLETED, "");
-                localStorage.setItem(STORAGE_KEY_COMPLETED, "");
+    static store(bookObject) {
+        let { id, title, author, year, isCompleted } = bookObject;
+
+        if (DATA_BOOKS.length > 0) {
+            let cekBuku = DATA_BOOKS.find((book) => book.title == title);
+            if (cekBuku) {
+                alert("Buku sudah ada di list");
+                return false
             }
         }
-    }
-
-    static store(title, author, year, isComplete, page) {
-
-        DATA_BOOKS.push({
-            id: Math.random().toString(16).slice(2),
-            title,
-            author,
-            year,
-            isComplete,
-            page
-        })
-
-        let cekBuku = DATA_BOOKS.find((book) => book.title == title);
-        if (cekBuku) {
-            localStorage.setItem(STORAGE_KEY_UNCOMPLETED, JSON.stringify(DATA_BOOKS_STORAGE_UNCOMPLETED));
-            alert("Buku sudah ada di list");
-            return
-        }
-
-        localStorage.setItem(STORAGE_KEY_UNCOMPLETED, JSON.stringify(DATA_BOOKS));
+        DATA_BOOKS.push({ id, title, author, year, isCompleted });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA_BOOKS));
+        alert("Buku berhasil ditambahkan");
+        return true;
     }
 }
