@@ -1,19 +1,26 @@
 import BookEvent from "./event.js";
 
-const root = document.querySelector("body")
-const bookEvent = new BookEvent(root);
+const bookEvent = new BookEvent();
 
-bookSubmit = document.querySelector("#bookSubmit");
 window.addEventListener("load", function () {
-    bookEvent.getBooksList();
+    bookEvent.getBooksList
 });
-
-
-bookSubmit.addEventListener("click", function (event) {
-    event.preventDefault();
+bookEvent.bookSubmit.addEventListener("click", function (event) {
+    event.preventDefault()
     bookEvent.create();
 });
 
+bookEvent.inputBookIsCompleted.addEventListener("click", function () {
+    if (this.checked) {
+        bookEvent.textButtonSubmit.innerText = "Sudah";
+    } else {
+        bookEvent.textButtonSubmit.innerText = "Belum";
+    }
+})
+
+
+
+
 window.addEventListener("unload", function () {
-    bookEvent.getBooksList();
+
 });
