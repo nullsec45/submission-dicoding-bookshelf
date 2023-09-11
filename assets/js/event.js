@@ -17,6 +17,21 @@ export default class BookEvent {
         typeNumber(this.inputBookYear);
 
     }
+    _addToUncompleted(bookId) {
+        let book = ManageLocalStorage.findBook(bookId);
+        book.isCompleted = false;
+
+        ManageLocalStorage.isCompleted(book);
+        this.getBooksList;
+    }
+
+    _addToCompleted(bookId) {
+        let book = ManageLocalStorage.findBook(bookId);
+        book.isCompleted = true;
+
+        ManageLocalStorage.isCompleted(book);
+        this.getBooksList;
+    }
 
     _renderElementBook(bookObject) {
         let { id, title, author, year, isCompleted } = bookObject;
@@ -45,12 +60,11 @@ export default class BookEvent {
         buttonIsCompleted.setAttribute("class", "green");
         buttonIsCompleted.innerText = `${isCompleted == true ? "Belum selesai dibaca" : "Selesai dibaca"}`;
 
-        buttonIsCompleted.addEventListener("click", function () {
-            alert("oke")
+        buttonIsCompleted.addEventListener("click", () => {
             if (isCompleted) {
-                // addToUncompleted(id);
+                this._addToUncompleted(id);
             } else {
-                // addToCompleted(id);
+                this._addToCompleted(id);
             }
         })
 
@@ -72,21 +86,30 @@ export default class BookEvent {
         return container;
     }
 
-    _appendToContainer(book) {
-        if (book.isCompleted) {
-            this.completeBookshelfList.append(this._renderElementBook(book));
-        } else {
-            this.incompleteBookshelfList.append(this._renderElementBook(book));
+    // _appendToContainer(book) {
+    //     if (book.isCompleted) {
+    //         this.completeBookshelfList.appendChild(this._renderElementBook(book));
+    //     } else {
+    //         this.incompleteBookshelfList.appendChild(this._renderElementBook(book));
 
-        }
-    }
+    //     }
+
+    // }
+
     get getBooksList() {
-        this.incompleteBookshelfList.innerHTML = "";
-        this.completeBookshelfList.innerHTML = "";
         if (ManageLocalStorage.isStorageExists) {
+            this.completeBookshelfList.innerHTML = "";
+            this.incompleteBookshelfList.innerHTML = "";
 
             ManageLocalStorage.index.forEach((book) => {
-                this._appendToContainer(book);
+                let bookElement = this._renderElementBook(book);
+
+                if (book.isCompleted) {
+                    this.completeBookshelfList.appendChild(bookElement);
+                } else {
+                    this.incompleteBookshelfList.appendChild(bookElement);
+                }
+
             });
 
         }
@@ -123,7 +146,8 @@ export default class BookEvent {
             book
         )
         if (bookStore) {
-            this._appendToContainer(book);
+            // this._appendToContainer(book);
+            this.getBooksList;
             document.querySelectorAll(".input_book").forEach((input) => input.value = "");
         }
     }
