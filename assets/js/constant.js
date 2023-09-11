@@ -1,3 +1,12 @@
+
 const STORAGE_KEY = "BOOKS_SELF";
-const DATA_BOOKS = [];
-export { STORAGE_KEY, DATA_BOOKS }
+let DATA_BOOKS = [];
+
+function setDataBooks(data) {
+    DATA_BOOKS = data
+}
+
+function booksIsCompleted(index, data) {
+
+}
+export { STORAGE_KEY, DATA_BOOKS, setDataBooks }
