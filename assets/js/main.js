@@ -3,7 +3,7 @@ import BookEvent from "./event.js";
 const bookEvent = new BookEvent();
 
 window.addEventListener("load", function () {
-    bookEvent.getBooksList
+    bookEvent.getBooksList();
 });
 bookEvent.bookSubmit.addEventListener("click", function (event) {
     event.preventDefault()
@@ -18,9 +18,7 @@ bookEvent.inputBookIsCompleted.addEventListener("click", function () {
     }
 })
 
-
-
-
-window.addEventListener("unload", function () {
-
-});
+bookEvent.searchSubmit.addEventListener("click", function (event) {
+    event.preventDefault();
+    bookEvent.searchBook();
+})
