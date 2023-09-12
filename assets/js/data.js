@@ -5,7 +5,7 @@ export default class ManageLocalStorage {
 
     static get isStorageExists() {
         if (typeof (Storage) === undefined) {
-            alert("Browser kamu tidak mendukung local storage");
+            alert("Browser kamu tidak mendukung local storage :)");
             return false;
         }
         return true;
@@ -63,5 +63,16 @@ export default class ManageLocalStorage {
 
         alert("Buku berhasil ditambahkan");
         return true;
+    }
+
+    static destroy(book) {
+        const books = this._loadBooksStorage
+
+        let index = books.map(book => book.title).indexOf(book.title);
+
+        books.splice(index, 1);
+
+        this._saveBookToLocalStorage(books);
+        setDataBooks([]);
     }
 }
