@@ -7,7 +7,7 @@ export default class BookEvent {
         this.inputBookTitle = document.querySelector("#input_book_title");
         this.inputBookAuthor = document.querySelector("#input_book_author");
         this.inputBookYear = document.querySelector("#input_book_year");
-        this.inputBookIsCompleted = document.querySelector("#input_book_is_completed");
+        this.inputBookIsComplete = document.querySelector("#input_book_is_complete");
 
         this.incompleteBookshelfList = document.getElementById("incomplete_bookshelf_list");
         this.completeBookshelfList = document.getElementById("complete_bookshelf_list");
@@ -17,26 +17,26 @@ export default class BookEvent {
         this.searchBookTitle = document.querySelector("#search_book_title");
         this.emptyBook = document.querySelector("#empty_book");
         this.emptyBookTitle = this.emptyBook.querySelector("#title");
-        this.containerInCompleted = document.querySelector("#incompleted_container");
-        this.containerCompleted = document.querySelector("#completed_container");
+        this.containerInComplete = document.querySelector("#incomplete_container");
+        this.containerComplete = document.querySelector("#complete_container");
 
 
         typeNumber(this.inputBookYear);
 
     }
-    _addToUncompleted(bookId) {
+    _addToUncomplete(bookId) {
         let book = ManageLocalStorage.findBook(bookId);
-        book.isCompleted = false;
+        book.isComplete = false;
 
-        ManageLocalStorage.isCompleted(book);
+        ManageLocalStorage.isComplete(book);
         this.getBooksList();
     }
 
-    _addToCompleted(bookId) {
+    _addToComplete(bookId) {
         let book = ManageLocalStorage.findBook(bookId);
-        book.isCompleted = true;
+        book.isComplete = true;
 
-        ManageLocalStorage.isCompleted(book);
+        ManageLocalStorage.isComplete(book);
         this.getBooksList();
     }
 
@@ -51,7 +51,7 @@ export default class BookEvent {
     }
 
     _renderElementBook(bookObject) {
-        let { id, title, author, year, isCompleted } = bookObject;
+        let { id, title, author, year, isComplete } = bookObject;
 
         const container = document.createElement("article");
         container.setAttribute("class", "book_item");
@@ -73,15 +73,15 @@ export default class BookEvent {
         action.setAttribute("class", "action");
 
 
-        const buttonIsCompleted = document.createElement("button");
-        buttonIsCompleted.setAttribute("class", "green");
-        buttonIsCompleted.innerText = `${isCompleted == true ? "Belum selesai dibaca" : "Selesai dibaca"}`;
+        const buttonIsComplete = document.createElement("button");
+        buttonIsComplete.setAttribute("class", "green");
+        buttonIsComplete.innerText = `${isComplete == true ? "Belum selesai dibaca" : "Selesai dibaca"}`;
 
-        buttonIsCompleted.addEventListener("click", () => {
-            if (isCompleted) {
-                this._addToUncompleted(id);
+        buttonIsComplete.addEventListener("click", () => {
+            if (isComplete) {
+                this._addToUncomplete(id);
             } else {
-                this._addToCompleted(id);
+                this._addToComplete(id);
             }
         })
 
@@ -93,7 +93,7 @@ export default class BookEvent {
             this._removeBook(id);
         })
 
-        action.append(buttonIsCompleted);
+        action.append(buttonIsComplete);
         action.append(buttonRemoveBook);
 
         container.append(action);
@@ -104,11 +104,11 @@ export default class BookEvent {
     _appendToContainer(book) {
         let bookElement = this._renderElementBook(book);
 
-        if (book.isCompleted) {
-            this.containerCompleted.style.display = "block";
+        if (book.isComplete) {
+            this.containerComplete.style.display = "block";
             this.completeBookshelfList.appendChild(bookElement);
         } else {
-            this.containerInCompleted.style.display = "block";
+            this.containerInComplete.style.display = "block";
             this.incompleteBookshelfList.appendChild(bookElement);
         }
     }
@@ -126,6 +126,8 @@ export default class BookEvent {
 
             if (books.length === 0) {
                 this.emptyBook.style.display = "block";
+                this.containerComplete.style.display = "none";
+                this.containerInComplete.style.display = "none";
                 return;
             }
             this.emptyBook.style.display = "none";
@@ -149,8 +151,8 @@ export default class BookEvent {
 
         this.emptyBook.style.display = "block";
         this.emptyBookTitle.innerText = "Sedang mencari buku...";
-        this.containerCompleted.style.display = "none";
-        this.containerInCompleted.style.display = "none";
+        this.containerComplete.style.display = "none";
+        this.containerInComplete.style.display = "none";
 
 
         ManageLocalStorage.index.map((book) => {
@@ -183,8 +185,8 @@ export default class BookEvent {
         let id = Math.random().toString(16).slice(2);
         let title = this.inputBookTitle.value;
         let author = this.inputBookAuthor.value;
-        let year = this.inputBookYear.value;
-        let isCompleted = this.inputBookIsCompleted.checked;
+        let year = parseInt(this.inputBookYear.value);
+        let isComplete = this.inputBookIsComplete.checked;
         let error = false;
 
         document.querySelectorAll(".input_book").forEach((input) => {
@@ -204,7 +206,7 @@ export default class BookEvent {
             title,
             author,
             year,
-            isCompleted,
+            isComplete,
         }
         let bookStore = ManageLocalStorage.store(
             book
