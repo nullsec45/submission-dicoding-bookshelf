@@ -10,7 +10,7 @@ bookEvent.bookSubmit.addEventListener("click", function (event) {
     bookEvent.create();
 });
 
-bookEvent.inputBookIsCompleted.addEventListener("click", function () {
+bookEvent.inputBookIsComplete.addEventListener("click", function () {
     if (this.checked) {
         bookEvent.textButtonSubmit.innerText = "Sudah";
     } else {

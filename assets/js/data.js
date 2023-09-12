@@ -33,7 +33,7 @@ export default class ManageLocalStorage {
         return books.find((book) => book.id == bookId);
     }
 
-    static isCompleted(book) {
+    static isComplete(book) {
         const books = this._loadBooksStorage
 
         let index = books.map(book => book.title).indexOf(book.title);
@@ -46,7 +46,7 @@ export default class ManageLocalStorage {
 
 
     static store(bookObject) {
-        let { id, title, author, year, isCompleted } = bookObject;
+        let { id, title, author, year, isComplete } = bookObject;
 
         if (DATA_BOOKS.length > 0) {
             let cekBuku = DATA_BOOKS.find((book) => book.title == title);
@@ -55,7 +55,7 @@ export default class ManageLocalStorage {
                 return false
             }
         }
-        DATA_BOOKS.push({ id, title, author, year, isCompleted });
+        DATA_BOOKS.push({ id, title, author, year, isComplete });
 
         this._saveBookToLocalStorage(DATA_BOOKS);
 
