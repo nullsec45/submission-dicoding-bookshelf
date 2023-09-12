@@ -6,7 +6,4 @@ function setDataBooks(data) {
     DATA_BOOKS = data
 }
 
-function booksIsCompleted(index, data) {
-
-}
 export { STORAGE_KEY, DATA_BOOKS, setDataBooks }
