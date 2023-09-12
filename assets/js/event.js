@@ -13,6 +13,13 @@ export default class BookEvent {
         this.completeBookshelfList = document.getElementById("complete_bookshelf_list");
         this.bookSubmit = document.querySelector("#book_submit");
         this.textButtonSubmit = document.querySelector("#text_button_submit");
+        this.searchSubmit = document.querySelector("#search_submit");
+        this.searchBookTitle = document.querySelector("#search_book_title");
+        this.emptyBook = document.querySelector("#empty_book");
+        this.emptyBookTitle = this.emptyBook.querySelector("#title");
+        this.containerInCompleted = document.querySelector("#incompleted_container");
+        this.containerCompleted = document.querySelector("#completed_container");
+
 
         typeNumber(this.inputBookYear);
 
@@ -22,7 +29,7 @@ export default class BookEvent {
         book.isCompleted = false;
 
         ManageLocalStorage.isCompleted(book);
-        this.getBooksList;
+        this.getBooksList();
     }
 
     _addToCompleted(bookId) {
@@ -30,7 +37,17 @@ export default class BookEvent {
         book.isCompleted = true;
 
         ManageLocalStorage.isCompleted(book);
-        this.getBooksList;
+        this.getBooksList();
+    }
+
+    _removeBook(bookId) {
+        let konfirmasi = confirm("Apa anda yakin ingin menghapus buku dari daftar buku");
+        if (!konfirmasi) {
+            return
+        }
+        let book = ManageLocalStorage.findBook(bookId);
+        ManageLocalStorage.destroy(book);
+        this.getBooksList();
     }
 
     _renderElementBook(bookObject) {
@@ -72,10 +89,8 @@ export default class BookEvent {
         buttonRemoveBook.setAttribute("class", "red");
         buttonRemoveBook.innerText = "Hapus Buku";
 
-        buttonRemoveBook.addEventListener("click", function () {
-            // removeBook();
-            alert("oke")
-
+        buttonRemoveBook.addEventListener("click", () => {
+            this._removeBook(id);
         })
 
         action.append(buttonIsCompleted);
@@ -86,33 +101,82 @@ export default class BookEvent {
         return container;
     }
 
-    // _appendToContainer(book) {
-    //     if (book.isCompleted) {
-    //         this.completeBookshelfList.appendChild(this._renderElementBook(book));
-    //     } else {
-    //         this.incompleteBookshelfList.appendChild(this._renderElementBook(book));
+    _appendToContainer(book) {
+        let bookElement = this._renderElementBook(book);
 
-    //     }
+        if (book.isCompleted) {
+            this.containerCompleted.style.display = "block";
+            this.completeBookshelfList.appendChild(bookElement);
+        } else {
+            this.containerInCompleted.style.display = "block";
+            this.incompleteBookshelfList.appendChild(bookElement);
+        }
+    }
 
-    // }
-
-    get getBooksList() {
+    getBooksList() {
         if (ManageLocalStorage.isStorageExists) {
             this.completeBookshelfList.innerHTML = "";
             this.incompleteBookshelfList.innerHTML = "";
 
+            let books = [];
+
             ManageLocalStorage.index.forEach((book) => {
-                let bookElement = this._renderElementBook(book);
-
-                if (book.isCompleted) {
-                    this.completeBookshelfList.appendChild(bookElement);
-                } else {
-                    this.incompleteBookshelfList.appendChild(bookElement);
-                }
-
+                books.push(book);
             });
 
+            if (books.length === 0) {
+                this.emptyBook.style.display = "block";
+                return;
+            }
+            this.emptyBook.style.display = "none";
+
+            books.forEach((book) => {
+                this._appendToContainer(book);
+            })
         }
+    }
+
+    searchBook() {
+        let title = this.searchBookTitle.value;
+        let searchBook = new RegExp(title, "gi");
+        let result = [];
+
+        if (title.trim("") == "") {
+            alert("Search Title Tidak Boleh Kosong!");
+            return;
+        }
+
+
+        this.emptyBook.style.display = "block";
+        this.emptyBookTitle.innerText = "Sedang mencari buku...";
+        this.containerCompleted.style.display = "none";
+        this.containerInCompleted.style.display = "none";
+
+
+        ManageLocalStorage.index.map((book) => {
+            if (searchBook.test(book.title)) {
+                result.push(book);
+            }
+        })
+
+
+        setTimeout(() => {
+            this.emptyBook.style.display = "none";
+            if (result.length === 0) {
+                this.emptyBook.style.display = "block";
+                this.emptyBookTitle.innerText = "Buku yang anda cari tidak ditemukan";
+                return;
+            }
+
+            result.forEach((book) => {
+                this.completeBookshelfList.innerHTML = "";
+                this.incompleteBookshelfList.innerHTML = "";
+
+                this._appendToContainer(book);
+            })
+        }, 3000);
+
+
     }
 
     create() {
@@ -146,8 +210,7 @@ export default class BookEvent {
             book
         )
         if (bookStore) {
-            // this._appendToContainer(book);
-            this.getBooksList;
+            this.getBooksList();
             document.querySelectorAll(".input_book").forEach((input) => input.value = "");
         }
     }
